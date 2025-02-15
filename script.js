@@ -3,29 +3,123 @@ function createPlayer(name, symbol) {
     return {name, symbol};
 }
 
-let player1 = createPlayer("ali", 'O');
-let player2 = createPlayer("umar", 'X');
-
 // to create gameboard object 
 let createGameboard = (function () {
 
     // create the gameboard Array
     let gameboardArray = (mark) => {
         let a, m, n, mat = [];
+        
         for (m = 0; m < 3; m++) {
             a = [];
             for (n = 0; n < 3; n++) {
-                a[n] = mark;
+                a[n] = mark; 
             }
             mat[m] = a;
         }
         return mat;
     };
+    
+    let winner = null;
+    let turns = 0; 
 
-    return {gameboardArray};    // return array as an item of object;
+    let setWinner = (w) => {winner = w};
+    let getWinner = () => {return winner}
+    let getTurns = () => {return turns};
+    let incTurns = () => {turns++};     // increase no. of turns
+
+    return {gameboardArray, setWinner, getWinner, getTurns, incTurns};    // return array as an item of object;
 })();
 
 // initialized gameboard object
 let gameboard = createGameboard.gameboardArray(' ');
 
+// function to insert marks in array
+let playGame = (m, n, mark) => {    // m = row, n = column
 
+    // insert the symbol in the array
+    if(isSpotAvailable(m, n)) {
+        (createGameboard.getTurns() < 9) ? createGameboard.incTurns() : alert("game is over!")
+        gameboard[m][n] = mark;
+    }
+    else 
+        console.log("Try again");
+
+    
+        // check for row1 
+        for (let i = 0; i < 3; i++) {
+            if(gameboard[i][0] === ('X' || 'O') && gameboard[i][0] === gameboard[i][1] && gameboard[i][1] === gameboard[i][2]){
+            if(player1.symbol === gameboard[i][1]) {
+                createGameboard.setWinner(player1.name);
+            }
+            else if(player2.symbol === gameboard[i][1])
+                createGameboard.setWinner(player2.name);
+        }
+        }
+
+        // for columns
+        for (let i = 0; i < 3; i++) {
+            if(gameboard[0][i] === ('X' || 'O') && gameboard[0][i] === gameboard[1][i] && gameboard[1][i] === gameboard[2][i]){
+            if(player1.symbol === gameboard[0][i]) {
+                createGameboard.setWinner(player1.name);
+            }
+            else if(player2.symbol === gameboard[0][i])
+                createGameboard.setWinner(player2.name);
+            }
+        } 
+        
+        // for diagonal
+        if(gameboard[0][0] === ('X' || 'O') && gameboard[0][0] === gameboard[1][1] && gameboard[1][1] === gameboard[2][2]) {
+            if(player1.symbol === gameboard[0][0]) {
+                createGameboard.setWinner(player1.name);
+            }
+            else if(player2.symbol === gameboard[0][0])
+                createGameboard.setWinner(player2.name);
+        }
+        else if(gameboard[0][2] === ('X' || 'O') && gameboard[0][2] === gameboard[1][1] && gameboard[1][1] === gameboard[2][0]) {
+            if(player1.symbol === gameboard[0][2]) {
+                createGameboard.setWinner(player1.name);
+            }
+            else if(player2.symbol === gameboard[0][2])
+                createGameboard.setWinner(player2.name);
+        }
+
+        console.log(createGameboard.getWinner());
+        console.log(createGameboard.getTurns());
+        if(createGameboard.getWinner() || createGameboard.getTurns() === 9) {
+            createGameboard.getTurns = 1;
+            console.log("Game Over!!")
+            return 0;
+        }
+    }
+
+// check for available spot
+function isSpotAvailable(m, n) {
+    return (gameboard[m][n] === ' ') ? true : false;
+}
+let player1;
+let player2;
+// game flow controller
+function gameController() {
+    
+    // get player name
+    // select player symbol
+    player1 = createPlayer("p1", 'X');
+    player2 = createPlayer("p2", 'O');
+    
+    let currentPlayer = player1;    
+
+    do {
+        let m = Math.floor(Math.random() * 3); // Random row
+        let n = Math.floor(Math.random() * 3); // Random column
+
+        // currentPlayer plays game first
+        playGame(m, n, currentPlayer.symbol);
+
+        // switch player 
+        currentPlayer = currentPlayer === player1 ? player2 : player1;
+    }while(!(createGameboard.getWinner()));
+    
+}
+
+gameController();

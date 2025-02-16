@@ -1,5 +1,6 @@
 // object to create user
 function createPlayer(name, symbol) {
+    
     return {name, symbol};
 }
 
@@ -19,7 +20,8 @@ let createGameboard = (function () {
         }
         return mat;
     };
-    
+ 
+    let currentClick = {};
     let winner = null;
     let turns = 0; 
 
@@ -27,8 +29,13 @@ let createGameboard = (function () {
     let getWinner = () => {return winner}
     let getTurns = () => {return turns};
     let incTurns = () => {turns++};     // increase no. of turns
-
-    return {gameboardArray, setWinner, getWinner, getTurns, incTurns};    // return array as an item of object;
+    
+    let setCurrentClick = (m, n) => {
+        currentClick = {m, n};
+    };
+    let getCurrentClick = () => currentClick;
+   
+    return {gameboardArray, setWinner, getWinner, getTurns, incTurns, getCurrentClick, setCurrentClick};    // return array as an item of object;
 })();
 
 // initialized gameboard object
@@ -39,7 +46,7 @@ let playGame = (m, n, mark) => {    // m = row, n = column
 
     // insert the symbol in the array
     if(isSpotAvailable(m, n)) {
-        (createGameboard.getTurns() < 9) ? createGameboard.incTurns() : alert("game is over!")
+        (createGameboard.getTurns() < 9) ? createGameboard.incTurns() : alert("game is over!");
         gameboard[m][n] = mark;
     }
     else 
@@ -87,39 +94,56 @@ let playGame = (m, n, mark) => {    // m = row, n = column
         console.log(createGameboard.getWinner());
         console.log(createGameboard.getTurns());
         if(createGameboard.getWinner() || createGameboard.getTurns() === 9) {
-            createGameboard.getTurns = 1;
             console.log("Game Over!!")
-            return 0;
         }
     }
 
 // check for available spot
 function isSpotAvailable(m, n) {
-    return (gameboard[m][n] === ' ') ? true : false;
+    return (gameboard[m][n] == ' ') ? true : false;
 }
+
 let player1;
 let player2;
-// game flow controller
-function gameController() {
-    
-    // get player name
-    // select player symbol
     player1 = createPlayer("p1", 'X');
     player2 = createPlayer("p2", 'O');
     
     let currentPlayer = player1;    
 
-    do {
-        let m = Math.floor(Math.random() * 3); // Random row
-        let n = Math.floor(Math.random() * 3); // Random column
+
+
+// game flow controller
+function gameController() {
+    
+    // get player name
+    // select player symbol
+    let m = +createGameboard.getCurrentClick().m;
+    let n = +createGameboard.getCurrentClick().n;
+     
+    if((isSpotAvailable(m, n))) {
 
         // currentPlayer plays game first
-        playGame(m, n, currentPlayer.symbol);
 
+        playGame(m, n, currentPlayer.symbol);
         // switch player 
-        currentPlayer = currentPlayer === player1 ? player2 : player1;
-    }while(!(createGameboard.getWinner()));
+        currentPlayer = (currentPlayer === player1) ? player2 : player1;
+        displayController();
+    } 
     
 }
 
-gameController();
+let p = null, q = null;
+ let boardEl = document.querySelector(".board");
+    boardEl.addEventListener("click", (e) => {
+        const target = e.target;
+        p = target.getAttribute("row");
+        q = target.getAttribute("column");
+        displayController();
+    });
+
+// display object
+function displayController() {
+        createGameboard.setCurrentClick(p, q);
+        gameController();
+
+}

@@ -1,0 +1,19 @@
+body {
+    box-sizing: 0;
+    padding: 0;
+    margin: 0;
+}
+
+.board {
+    border: 1px solid black;
+    height: 360px;
+    width: 360px;
+    margin: auto;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.box {
+    width: 120px;
+    height: 120px;
+}

@@ -1,8 +1,43 @@
-// object to create user
-function createPlayer(name, symbol) {
+// object for player
+let Player = (() => {
+    let currentPlayer = {};
+    let pArray = [
+        {
+            name: "",
+            score: 0,
+            symbol: '',
+        },
+        {
+            name: "",
+            score: 0,
+            symbol: '', 
+        }
+    ];
+
+    let setPlayer = (name, symbol, score = 0) => {
+        if(pArray[0].name === "") {
+            pArray[0].name = name;
+            pArray[0].symbol = symbol;
+            pArray[0].score = score;
+        }
+        else {
+            pArray[1].name = name;
+            pArray[1].symbol = symbol;
+            pArray[1].score = score;
+ 
+        }
+        return {pArray};
+    }
+
+    let getPlayer = () => {return pArray};
+
+    let setCurrentPlayer = (player) => {currentPlayer = player}
+    let getCurrentPlayer = () => {return currentPlayer};
     
-    return {name, symbol};
-}
+    return {setPlayer, getPlayer, setCurrentPlayer, getCurrentPlayer};
+})();
+
+
 
 // to create gameboard object 
 let createGameboard = (function () {
@@ -33,7 +68,7 @@ let createGameboard = (function () {
     let setCurrentClick = (m, n) => {
         currentClick = {m, n};
     };
-    let getCurrentClick = () => currentClick;
+    let getCurrentClick = () => {return currentClick};
    
     return {gameboardArray, setWinner, getWinner, getTurns, incTurns, getCurrentClick, setCurrentClick};    // return array as an item of object;
 })();
@@ -55,40 +90,40 @@ let playGame = (m, n, mark) => {    // m = row, n = column
     
         // check for row1 
         for (let i = 0; i < 3; i++) {
-            if(gameboard[i][0] === ('X' || 'O') && gameboard[i][0] === gameboard[i][1] && gameboard[i][1] === gameboard[i][2]){
-            if(player1.symbol === gameboard[i][1]) {
-                createGameboard.setWinner(player1.name);
-            }
-            else if(player2.symbol === gameboard[i][1])
-                createGameboard.setWinner(player2.name);
+            if(((gameboard[i][0] === 'O') || (gameboard[i][0] === 'X')) && gameboard[i][0] === gameboard[i][1] && gameboard[i][1] === gameboard[i][2]){
+                if(Player.getPlayer()[0].symbol === gameboard[i][1]) {
+                    createGameboard.setWinner(Player.getPlayer()[0].name);
+                }
+                else if(Player.getPlayer()[1].symbol === gameboard[i][1])
+                    createGameboard.setWinner(Player.getPlayer()[1].name);
         }
         }
 
         // for columns
         for (let i = 0; i < 3; i++) {
-            if(gameboard[0][i] === ('X' || 'O') && gameboard[0][i] === gameboard[1][i] && gameboard[1][i] === gameboard[2][i]){
-            if(player1.symbol === gameboard[0][i]) {
-                createGameboard.setWinner(player1.name);
+            if(((gameboard[0][i] === 'X')  || (gameboard[0][i] === 'O')) && gameboard[0][i] === gameboard[1][i] && gameboard[1][i] === gameboard[2][i]){
+            if(Player.getPlayer()[0].symbol === gameboard[0][i]) {
+                createGameboard.setWinner(Player.getPlayer()[0].name);
             }
-            else if(player2.symbol === gameboard[0][i])
-                createGameboard.setWinner(player2.name);
+            else if(Player.getPlayer()[1].symbol === gameboard[0][i])
+                createGameboard.setWinner(Player.getPlayer()[1].name);
             }
         } 
         
         // for diagonal
-        if(gameboard[0][0] === ('X' || 'O') && gameboard[0][0] === gameboard[1][1] && gameboard[1][1] === gameboard[2][2]) {
-            if(player1.symbol === gameboard[0][0]) {
-                createGameboard.setWinner(player1.name);
+        if(((gameboard[0][0] === 'X') || (gameboard[0][0] === 'O')) && gameboard[0][0] === gameboard[1][1] && gameboard[1][1] === gameboard[2][2]) {
+            if(Player.getPlayer()[0].symbol === gameboard[0][0]) {
+                createGameboard.setWinner(Player.getPlayer()[0].name);
             }
-            else if(player2.symbol === gameboard[0][0])
-                createGameboard.setWinner(player2.name);
+            else if(Player.getPlayer()[1].symbol === gameboard[0][0])
+                createGameboard.setWinner(Player.getPlayer()[1].name);
         }
-        else if(gameboard[0][2] === ('X' || 'O') && gameboard[0][2] === gameboard[1][1] && gameboard[1][1] === gameboard[2][0]) {
-            if(player1.symbol === gameboard[0][2]) {
-                createGameboard.setWinner(player1.name);
+        else if(((gameboard[0][2] === 'X') || (gameboard[0][2] === 'O')) && gameboard[0][2] === gameboard[1][1] && gameboard[1][1] === gameboard[2][0]) {
+            if(Player.getPlayer()[0].symbol === gameboard[0][2]) {
+                createGameboard.setWinner(Player.getPlayer()[0].name);
             }
-            else if(player2.symbol === gameboard[0][2])
-                createGameboard.setWinner(player2.name);
+            else if(Player.getPlayer()[1].symbol === gameboard[0][2])
+                createGameboard.setWinner(Player.getPlayer()[1].name);
         }
 
         console.log(createGameboard.getWinner());
@@ -100,18 +135,10 @@ let playGame = (m, n, mark) => {    // m = row, n = column
 
 // check for available spot
 function isSpotAvailable(m, n) {
-    return (gameboard[m][n] == ' ') ? true : false;
+    return (gameboard[m][n] === ' ') ? true : false;
 }
-
-let player1;
-let player2;
-    player1 = createPlayer("p1", 'X');
-    player2 = createPlayer("p2", 'O');
-    
-    let currentPlayer = player1;    
-
-
-
+ let currentP = {};
+    Player.setCurrentPlayer(Player.getPlayer()[0]);
 // game flow controller
 function gameController() {
     
@@ -119,31 +146,53 @@ function gameController() {
     // select player symbol
     let m = +createGameboard.getCurrentClick().m;
     let n = +createGameboard.getCurrentClick().n;
-     
+   
+    
+    console.log(m,n)
     if((isSpotAvailable(m, n))) {
 
         // currentPlayer plays game first
 
-        playGame(m, n, currentPlayer.symbol);
+        playGame(m, n, Player.getCurrentPlayer().symbol);
         // switch player 
-        currentPlayer = (currentPlayer === player1) ? player2 : player1;
-        displayController();
-    } 
+        currentP = (Player.getCurrentPlayer() === Player.getPlayer()[0]) ? Player.getPlayer()[1]: Player.getPlayer()[0];
+        Player.setCurrentPlayer(currentP);
+        // displayController();
+    }
+    else  
+        console.log("hi");
     
 }
 
-let p = null, q = null;
- let boardEl = document.querySelector(".board");
-    boardEl.addEventListener("click", (e) => {
-        const target = e.target;
-        p = target.getAttribute("row");
-        q = target.getAttribute("column");
-        displayController();
-    });
-
 // display object
-function displayController() {
-        createGameboard.setCurrentClick(p, q);
-        gameController();
+let displayController = (() => {
 
-}
+    // click dimensions
+    let p = null, q = null;
+    
+    let boardEl = document.querySelector(".board");
+
+    let setClick = (p, q) => {
+        createGameboard.setCurrentClick(p, q);
+    }
+
+    // listen to click and pass click
+    function PlayOnClick() {
+
+        boardEl.addEventListener("click", (e) => {
+            const target = e.target;
+            let m = +target.getAttribute("row");
+            let n = +target.getAttribute("column");
+            setClick(m, n);
+            gameController();
+        });
+    };
+
+
+        // gameController();
+    return {PlayOnClick, setClick};
+})();
+Player.setPlayer("ali", "X")
+Player.setPlayer("Umar", "O")
+Player.setCurrentPlayer(Player.getPlayer()[0]);
+displayController.PlayOnClick();

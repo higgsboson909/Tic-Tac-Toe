@@ -1,3 +1,6 @@
+
+
+
 // object for player
 let Player = (() => {
     let currentPlayer = {};
@@ -78,11 +81,18 @@ let gameboard = createGameboard.gameboardArray(' ');
 
 // function to insert marks in array
 let playGame = (m, n, mark) => {    // m = row, n = column
+    let gameOver = () => {
+        if(createGameboard.getWinner() || createGameboard.getTurns() === 9) {
+            displayController.boardEl.removeEventListener('click', displayController.turnListener);
+            console.log("Game Over!!")
+        }
+    };
 
     // insert the symbol in the array
     if(isSpotAvailable(m, n)) {
         (createGameboard.getTurns() < 9) ? createGameboard.incTurns() : alert("game is over!");
         gameboard[m][n] = mark;
+        displayController.markBox(mark);
     }
     else 
         console.log("Try again");
@@ -128,9 +138,11 @@ let playGame = (m, n, mark) => {    // m = row, n = column
 
         console.log(createGameboard.getWinner());
         console.log(createGameboard.getTurns());
-        if(createGameboard.getWinner() || createGameboard.getTurns() === 9) {
-            console.log("Game Over!!")
-        }
+        gameOver();
+        // if(createGameboard.getWinner() || createGameboard.getTurns() === 9) {
+            
+        //     console.log("Game Over!!")
+        // }
     }
 
 // check for available spot
@@ -144,8 +156,8 @@ function gameController() {
     
     // get player name
     // select player symbol
-    let m = +createGameboard.getCurrentClick().m;
-    let n = +createGameboard.getCurrentClick().n;
+    let m = createGameboard.getCurrentClick().m;
+    let n = createGameboard.getCurrentClick().n;
    
     
     console.log(m,n)
@@ -175,22 +187,68 @@ let displayController = (() => {
     let setClick = (p, q) => {
         createGameboard.setCurrentClick(p, q);
     }
+    let turnListener = (e) => {
 
-    // listen to click and pass click
-    function PlayOnClick() {
-
-        boardEl.addEventListener("click", (e) => {
             const target = e.target;
             let m = +target.getAttribute("row");
             let n = +target.getAttribute("column");
             setClick(m, n);
             gameController();
-        });
+
+        };
+
+    
+        // listen to click and pass click
+    function PlayOnClick() {
+        boardEl.addEventListener("click", this.turnListener);
+    };
+
+    // render the symbol
+    let markBox = (mark) => {
+        let boxesEl = document.querySelectorAll(".box");
+        let click = {};
+        let setMark = (mark) => {
+            let imgEl = document.createElement("img");
+            if(mark == 'X') { 
+                imgEl.src = "./images/close_24dp_5F6368_FILL0_wght400_GRAD0_opsz24.svg";
+            }
+            else if(mark == 'O') 
+                imgEl.src = "./images/check.svg";
+            return imgEl;
+
+        };
+        click = createGameboard.getCurrentClick();
+        console.log(click);
+        let symbol = gameboard[click.m][click.n];
+        // for(let i = 0; i < 3; i++) {
+            // for(let j = 0; j < 3; j++) {
+                if(symbol === 'X') {
+                    click = createGameboard.getCurrentClick();
+                    boxesEl.forEach((boxEl) => {
+                        if(click.m == +boxEl.getAttribute("row") && click.n == +boxEl.getAttribute("column")) {
+                            
+                            boxEl.appendChild(setMark(symbol));
+                        }
+                        
+                    });
+                }
+                else {
+
+                    boxesEl.forEach((boxEl) => {
+                    if(click.m == +boxEl.getAttribute("row") && click.n == +boxEl.getAttribute("column")) {
+                        boxEl.appendChild(setMark(symbol));
+                    }
+
+                    });
+                }
+
+            // }
+        // }
     };
 
 
         // gameController();
-    return {PlayOnClick, setClick};
+    return {PlayOnClick, setClick, boardEl, turnListener, markBox};
 })();
 Player.setPlayer("ali", "X")
 Player.setPlayer("Umar", "O")

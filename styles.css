@@ -1,19 +1,59 @@
 body {
-    box-sizing: 0;
+    display: flex;
     padding: 0;
     margin: 0;
+    background-color: #24b388;
+}
+
+.name a {
+    text-align: left;
+    font-family: "Chewy";
+    font-size: 4rem;
+    font-weight: 600;
+    text-decoration: none;
+    color: #665f5f;
+    text-shadow: -2px 2px 1px rgba(0,0,0,0.59); 
+
+}
+.name {
+    position: absolute;
+    padding-top: 20px;
+    padding-left: 40px;
 }
 
 .board {
-    border: 1px solid black;
     height: 360px;
-    width: 360px;
+    width: 396px;
     margin: auto;
     display: flex;
     flex-wrap: wrap;
+    margin-top: 220px;
+    gap: 18px;
 }
 
 .box {
+    cursor: pointer;
+    box-shadow: 8px 8px 8px 1px gray;
+    border: none;
     width: 120px;
+    border-radius: 10px;
     height: 120px;
+}
+
+.box:hover {
+    height: 118px;
+    margin: 1px 0 1px 0;
+    box-shadow: 5px 5px 5px -1px gray;
+    background-color: #e1e3e3;
+}
+
+.box img {
+    width: 80px;
+    height: 80px;
+}
+.x-mark {
+    background-image: url("./imgaes/close_24dp_5F6368_FILL0_wght400_GRAD0_opsz24.svg");
+}
+.o-mark {
+    background-image: url("./imgaes/check.svg");
 }

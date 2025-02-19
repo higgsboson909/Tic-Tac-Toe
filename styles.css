@@ -44,12 +44,15 @@ body {
     height: 118px;
     margin: 1px 0 1px 0;
     box-shadow: 5px 5px 5px -1px gray;
-    background-color: #e1e3e3;
 }
 
 .box img {
     width: 80px;
     height: 80px;
+}
+
+.color {
+    background-color: antiquewhite;
 }
 .x-mark {
     background-image: url("./imgaes/close_24dp_5F6368_FILL0_wght400_GRAD0_opsz24.svg");

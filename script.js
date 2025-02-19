@@ -43,7 +43,7 @@ let Player = (() => {
 
 
 // to create gameboard object 
-let createGameboard = (function () {
+let createGameboard = () => {
 
     // create the gameboard Array
     let gameboardArray = (mark) => {
@@ -72,17 +72,51 @@ let createGameboard = (function () {
         currentClick = {m, n};
     };
     let getCurrentClick = () => {return currentClick};
-   
-    return {gameboardArray, setWinner, getWinner, getTurns, incTurns, getCurrentClick, setCurrentClick};    // return array as an item of object;
-})();
+        
+    let resultBoxes = [
+    ];       // array of objects
+    let setResultBoxes = (b1, b2, b3) => {
+        resultBoxes = [b1, b2, b3];
+    };
+    
+    let getResultBoxes = () => {return resultBoxes};
+
+    function highlightResultBoxes() {
+
+        let b1 , b2 , b3;
+
+        let boxesEl = document.querySelectorAll(".box");
+        b1 = gameboardCreated.getResultBoxes()[0];
+        b2 = gameboardCreated.getResultBoxes()[1];
+        b3 = gameboardCreated.getResultBoxes()[2];
+        boxesEl.forEach((box) => {
+            if(+box.dataset.row === b1.m && +box.dataset.column === b1.i) {
+
+                box.classList.add("color");
+            }
+            if(+box.dataset.row === b2.m && +box.dataset.column === b2.i) {
+                box.classList.add("color");
+            }
+            if(+box.dataset.row === b3.m && +box.dataset.column === b3.i) {
+                box.classList.add("color");
+            }
+            
+        });
+    };
+ 
+    return {gameboardArray, setWinner, getWinner, getTurns, incTurns, getCurrentClick, setCurrentClick, setResultBoxes, getResultBoxes, highlightResultBoxes};    // return array as an item of object;
+};
+
+let gameboardCreated = createGameboard();
+
 
 // initialized gameboard object
-let gameboard = createGameboard.gameboardArray(' ');
+let gameboard = gameboardCreated.gameboardArray(' ');
 
 // function to insert marks in array
 let playGame = (m, n, mark) => {    // m = row, n = column
     let gameOver = () => {
-        if(createGameboard.getWinner() || createGameboard.getTurns() === 9) {
+        if(gameboardCreated.getWinner() || gameboardCreated.getTurns() === 9) {
             displayController.boardEl.removeEventListener('click', displayController.turnListener);
             console.log("Game Over!!")
         }
@@ -90,7 +124,7 @@ let playGame = (m, n, mark) => {    // m = row, n = column
 
     // insert the symbol in the array
     if(isSpotAvailable(m, n)) {
-        (createGameboard.getTurns() < 9) ? createGameboard.incTurns() : alert("game is over!");
+        (gameboardCreated.getTurns() < 9) ? gameboardCreated.incTurns() : alert("game is over!");
         gameboard[m][n] = mark;
         displayController.markBox(mark);
     }
@@ -102,43 +136,59 @@ let playGame = (m, n, mark) => {    // m = row, n = column
         for (let i = 0; i < 3; i++) {
             if(((gameboard[i][0] === 'O') || (gameboard[i][0] === 'X')) && gameboard[i][0] === gameboard[i][1] && gameboard[i][1] === gameboard[i][2]){
                 if(Player.getPlayer()[0].symbol === gameboard[i][1]) {
-                    createGameboard.setWinner(Player.getPlayer()[0].name);
+                    gameboardCreated.setResultBoxes({m: i, i: 0}, {m: i, i: 1}, {m: i, i: 2});
+                    gameboardCreated.setWinner(Player.getPlayer()[0].name);
                 }
-                else if(Player.getPlayer()[1].symbol === gameboard[i][1])
-                    createGameboard.setWinner(Player.getPlayer()[1].name);
-        }
+                else if(Player.getPlayer()[1].symbol === gameboard[i][1]){
+                    gameboardCreated.setResultBoxes({m: i, i: 0}, {m: i, i: 1}, {m: i, i: 2});
+                    gameboardCreated.setWinner(Player.getPlayer()[1].name);
+                }
+            }
         }
 
         // for columns
         for (let i = 0; i < 3; i++) {
             if(((gameboard[0][i] === 'X')  || (gameboard[0][i] === 'O')) && gameboard[0][i] === gameboard[1][i] && gameboard[1][i] === gameboard[2][i]){
             if(Player.getPlayer()[0].symbol === gameboard[0][i]) {
-                createGameboard.setWinner(Player.getPlayer()[0].name);
+                gameboardCreated.setWinner(Player.getPlayer()[0].name);
+                gameboardCreated.setResultBoxes({m: 0, i}, {m: 1, i}, {m: 2, i});
             }
-            else if(Player.getPlayer()[1].symbol === gameboard[0][i])
-                createGameboard.setWinner(Player.getPlayer()[1].name);
-            }
+            else if(Player.getPlayer()[1].symbol === gameboard[0][i]) {
+                gameboardCreated.setWinner(Player.getPlayer()[1].name);
+                gameboardCreated.setResultBoxes({m: 0, i}, {m: 1, i}, {m: 2, i});
+            }}
         } 
         
         // for diagonal
         if(((gameboard[0][0] === 'X') || (gameboard[0][0] === 'O')) && gameboard[0][0] === gameboard[1][1] && gameboard[1][1] === gameboard[2][2]) {
             if(Player.getPlayer()[0].symbol === gameboard[0][0]) {
-                createGameboard.setWinner(Player.getPlayer()[0].name);
+                gameboardCreated.setWinner(Player.getPlayer()[0].name);
+                gameboardCreated.setResultBoxes({m: 0, i: 0}, {m: 1, i: 1}, {m: 2, i: 2});
             }
-            else if(Player.getPlayer()[1].symbol === gameboard[0][0])
-                createGameboard.setWinner(Player.getPlayer()[1].name);
-        }
-        else if(((gameboard[0][2] === 'X') || (gameboard[0][2] === 'O')) && gameboard[0][2] === gameboard[1][1] && gameboard[1][1] === gameboard[2][0]) {
-            if(Player.getPlayer()[0].symbol === gameboard[0][2]) {
-                createGameboard.setWinner(Player.getPlayer()[0].name);
+            else if(Player.getPlayer()[1].symbol === gameboard[0][0]) {
+                gameboardCreated.setWinner(Player.getPlayer()[1].name);
+                gameboardCreated.setResultBoxes({m: 0, i: 0}, {m: 1, i: 1}, {m: 2, i: 2});
             }
-            else if(Player.getPlayer()[1].symbol === gameboard[0][2])
-                createGameboard.setWinner(Player.getPlayer()[1].name);
         }
 
-        console.log(createGameboard.getWinner());
-        console.log(createGameboard.getTurns());
-        gameOver();
+        else if(((gameboard[0][2] === 'X') || (gameboard[0][2] === 'O')) && gameboard[0][2] === gameboard[1][1] && gameboard[1][1] === gameboard[2][0]) {
+            if(Player.getPlayer()[0].symbol === gameboard[0][2]) {
+                gameboardCreated.setWinner(Player.getPlayer()[0].name);
+                gameboardCreated.setResultBoxes({m: 0, i: 2}, {m: 1, i: 1}, {m: 2, i: 0});
+            }
+            else if(Player.getPlayer()[1].symbol === gameboard[0][2]) {
+                gameboardCreated.setResultBoxes({m: 0, i: 2}, {m: 1, i: 1}, {m: 2, i: 0});
+                gameboardCreated.setWinner(Player.getPlayer()[1].name);
+            }
+
+            
+        }
+if(gameboardCreated.getWinner()) {
+                
+                console.log(gameboardCreated.getResultBoxes());
+                gameboardCreated.highlightResultBoxes()
+            }
+        gameOver(); 
         // if(createGameboard.getWinner() || createGameboard.getTurns() === 9) {
             
         //     console.log("Game Over!!")
@@ -147,7 +197,9 @@ let playGame = (m, n, mark) => {    // m = row, n = column
 
 // check for available spot
 function isSpotAvailable(m, n) {
-    return (gameboard[m][n] === ' ') ? true : false;
+    if(!(isNaN(m) || isNaN(n))) {
+        return (gameboard[m][n] === ' ') ? true : false;
+    }
 }
  let currentP = {};
     Player.setCurrentPlayer(Player.getPlayer()[0]);
@@ -156,11 +208,9 @@ function gameController() {
     
     // get player name
     // select player symbol
-    let m = createGameboard.getCurrentClick().m;
-    let n = createGameboard.getCurrentClick().n;
-   
-    
-    console.log(m,n)
+    let m = gameboardCreated.getCurrentClick().m;
+    let n = gameboardCreated.getCurrentClick().n;
+
     if((isSpotAvailable(m, n))) {
 
         // currentPlayer plays game first
@@ -185,13 +235,13 @@ let displayController = (() => {
     let boardEl = document.querySelector(".board");
 
     let setClick = (p, q) => {
-        createGameboard.setCurrentClick(p, q);
+        gameboardCreated.setCurrentClick(p, q);
     }
     let turnListener = (e) => {
 
             const target = e.target;
-            let m = +target.getAttribute("row");
-            let n = +target.getAttribute("column");
+            let m = +target.dataset.row;
+            let n = +target.dataset.column;
             setClick(m, n);
             gameController();
 
@@ -200,7 +250,7 @@ let displayController = (() => {
     
         // listen to click and pass click
     function PlayOnClick() {
-        boardEl.addEventListener("click", this.turnListener);
+        boardEl.addEventListener("click", turnListener);
     };
 
     // render the symbol
@@ -217,35 +267,25 @@ let displayController = (() => {
             return imgEl;
 
         };
-        click = createGameboard.getCurrentClick();
+        click = gameboardCreated.getCurrentClick();
         console.log(click);
         let symbol = gameboard[click.m][click.n];
-        // for(let i = 0; i < 3; i++) {
-            // for(let j = 0; j < 3; j++) {
-                if(symbol === 'X') {
-                    click = createGameboard.getCurrentClick();
-                    boxesEl.forEach((boxEl) => {
-                        if(click.m == +boxEl.getAttribute("row") && click.n == +boxEl.getAttribute("column")) {
+
+        click = gameboardCreated.getCurrentClick();
+        boxesEl.forEach((boxEl) => {
+            if(click.m == +boxEl.dataset.row && click.n == +boxEl.dataset.column && symbol === 'X') {
                             
-                            boxEl.appendChild(setMark(symbol));
-                        }
+                boxEl.append(setMark(symbol));
+            }
+            else if(click.m == +boxEl.dataset.row && click.n == +boxEl.dataset.column && symbol === 'O') {
+
+                boxEl.append(setMark(symbol));
+            }
                         
-                    });
-                }
-                else {
+        });
+    }
 
-                    boxesEl.forEach((boxEl) => {
-                    if(click.m == +boxEl.getAttribute("row") && click.n == +boxEl.getAttribute("column")) {
-                        boxEl.appendChild(setMark(symbol));
-                    }
-
-                    });
-                }
-
-            // }
-        // }
-    };
-
+    
 
         // gameController();
     return {PlayOnClick, setClick, boardEl, turnListener, markBox};

@@ -1,7 +1,7 @@
 
 
-
 // object for player
+
 let Player = (() => {
     let currentPlayer = {};
     let pArray = [
@@ -82,26 +82,46 @@ let createGameboard = () => {
     let getResultBoxes = () => {return resultBoxes};
 
     function highlightResultBoxes() {
-
         let b1 , b2 , b3;
-
         let boxesEl = document.querySelectorAll(".box");
         b1 = gameboardCreated.getResultBoxes()[0];
         b2 = gameboardCreated.getResultBoxes()[1];
         b3 = gameboardCreated.getResultBoxes()[2];
-        boxesEl.forEach((box) => {
-            if(+box.dataset.row === b1.m && +box.dataset.column === b1.i) {
+        
 
+         
+
+        // Optional: Stop the animation after 10 seconds
+        // setTimeout(() => {
+        //     clearInterval(intervalId); // Stop the interval
+        //     box.style.backgroundColor = "lightblue"; // Reset to the original color
+        // }, 10000);
+
+        if(gameboardCreated.getTurns() === 9 && !(gameboardCreated.getWinner())) {
+
+            boxesEl.forEach((box) => {
                 box.classList.add("color");
+                display.blinkTheBoxes(box);
+            })
+        }
+
+        if(b1 || b2 || b3) {
+            boxesEl.forEach((box) => {
+                if(+box.dataset.row === b1.m && +box.dataset.column === b1.i) {
+                box.classList.add("color");
+                display.blinkTheBoxes(box);
             }
             if(+box.dataset.row === b2.m && +box.dataset.column === b2.i) {
                 box.classList.add("color");
+                display.blinkTheBoxes(box);
             }
             if(+box.dataset.row === b3.m && +box.dataset.column === b3.i) {
                 box.classList.add("color");
+                display.blinkTheBoxes(box);
             }
             
         });
+        }
     };
  
     return {gameboardArray, setWinner, getWinner, getTurns, incTurns, getCurrentClick, setCurrentClick, setResultBoxes, getResultBoxes, highlightResultBoxes};    // return array as an item of object;
@@ -116,9 +136,14 @@ let gameboard = gameboardCreated.gameboardArray(' ');
 // function to insert marks in array
 let playGame = (m, n, mark) => {    // m = row, n = column
     let gameOver = () => {
-        if(gameboardCreated.getWinner() || gameboardCreated.getTurns() === 9) {
-            displayController.boardEl.removeEventListener('click', displayController.turnListener);
-            console.log("Game Over!!")
+        if(gameboardCreated.getWinner() || gameboardCreated.getTurns() === 9) { 
+        let boxesEl = document.querySelectorAll(".box");
+        boxesEl.forEach((box) => {
+            box.classList.remove("on-hover");
+        });
+        gameboardCreated.highlightResultBoxes();
+        console.log("Game Over!!")
+        display.boardEl.removeEventListener('click', display.turnListener);
         }
     };
 
@@ -126,7 +151,7 @@ let playGame = (m, n, mark) => {    // m = row, n = column
     if(isSpotAvailable(m, n)) {
         (gameboardCreated.getTurns() < 9) ? gameboardCreated.incTurns() : alert("game is over!");
         gameboard[m][n] = mark;
-        displayController.markBox(mark);
+        display.markBox(mark);
     }
     else 
         console.log("Try again");
@@ -183,16 +208,8 @@ let playGame = (m, n, mark) => {    // m = row, n = column
 
             
         }
-if(gameboardCreated.getWinner()) {
-                
-                console.log(gameboardCreated.getResultBoxes());
-                gameboardCreated.highlightResultBoxes()
-            }
+
         gameOver(); 
-        // if(createGameboard.getWinner() || createGameboard.getTurns() === 9) {
-            
-        //     console.log("Game Over!!")
-        // }
     }
 
 // check for available spot
@@ -227,7 +244,28 @@ function gameController() {
 }
 
 // display object
-let displayController = (() => {
+let displayController = () => {
+
+    const p1FormEl = document.querySelector(".player-1");
+    const p2FormEl = document.querySelector(".player-2");
+    const p1CloseDialog = document.querySelector(".player-1 .p1-confirm");
+    const p2CloseDialog = document.querySelector(".player-2 .p2-confirm");
+
+    function showDialog() {
+
+        p1FormEl.showModal();
+        p1CloseDialog.addEventListener('click', () => {
+            p1FormEl.close();
+            p2FormEl.showModal();
+            p2CloseDialog.addEventListener("click", () => {
+                p2FormEl.close();
+            })
+        });
+    }
+    
+    function closeDialog() {
+        
+    }
 
     // click dimensions
     let p = null, q = null;
@@ -285,12 +323,25 @@ let displayController = (() => {
         });
     }
 
+    let blinkTheBoxes = (box) => {
+        let blinkingColor;
+        let colors = ["#5ebaa3", "#a3f2d6"];
+        let currentIndex = 0;
+        let intervalId = setInterval(() => {
+            box.style.backgroundColor = colors[currentIndex];
+
+            currentIndex = (currentIndex + 1) % colors.length;
+        }, 250);
+        return intervalId;  
+    }
     
 
         // gameController();
-    return {PlayOnClick, setClick, boardEl, turnListener, markBox};
-})();
+    return {PlayOnClick, setClick, boardEl, turnListener, markBox, blinkTheBoxes, showDialog};
+};
+let display = displayController();
+display.showDialog();
 Player.setPlayer("ali", "X")
 Player.setPlayer("Umar", "O")
 Player.setCurrentPlayer(Player.getPlayer()[0]);
-displayController.PlayOnClick();
+display.PlayOnClick();

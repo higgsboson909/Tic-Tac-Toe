@@ -13,20 +13,51 @@
     </title>
 </head>
 <body>
+    <dialog class="player-1">
+        <p>Enter Player 1 name</p>
+        
+        <form action="" method="dialog">
+            <div>
+                <label for="p1-name">Player 1</label>
+                <input id="p1-name" type="text" placeholder="Enter the name: ">
+            </div>
+
+            <div>
+                <label for="p1-name">Choose Mark</label>
+                
+            </div>
+
+            <button class="p1-confirm">Confirm</button>
+
+
+        </form>
+    </dialog>
+
+    <dialog class="player-2">
+        <p>Enter Player 2 name</p>
+        
+        <form action="" method="dialog">
+            <div>
+                <label for="p1-name">Player 1</label>
+                <input id="p1-name" type="text" placeholder="Enter the name: ">
+            </div>
+            <button class="p2-confirm">Confirm</button>
+        </form>
+    </dialog>
     <div class="name">
         <a href="./index.html">Tic-Tac-Toe 
         </a>
     </div>
     <div class="board">
-        <button class="box" data-row="0" data-column="0"></button>
-        <button class="box" data-row="0" data-column="1"></button>
-        <button class="box" data-row="0" data-column="2"></button>
-        <button class="box" data-row="1" data-column="0"></button>
-        <button class="box" data-row="1" data-column="1"></button>
-        <button class="box" data-row="1" data-column="2"></button>
-        <button class="box" data-row="2" data-column="0"></button>
-        <button class="box" data-row="2" data-column="1"></button>
-        <button class="box" data-row="2" data-column="2"></button>
+        <button class="box on-hover" data-row="0" data-column="0"></button>
+        <button class="box on-hover" data-row="0" data-column="1"></button>
+        <button class="box on-hover" data-row="0" data-column="2"></button>
+        <button class="box on-hover" data-row="1" data-column="0"></button>
+        <button class="box on-hover" data-row="1" data-column="1"></button>
+        <button class="box on-hover" data-row="1" data-column="2"></button>
+        <button class="box on-hover" data-row="2" data-column="0"></button>
+        <button class="box on-hover" data-row="2" data-column="1"></button>
+        <button class="box on-hover" data-row="2" data-column="2"></button>
     </div>
 </body>
 <script src="./script.js"></script>

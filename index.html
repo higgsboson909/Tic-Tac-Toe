@@ -7,12 +7,30 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Chewy&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
 
    <link rel="stylesheet" href="./styles.css">
     <title>Tic Tac Toe | The Odin Project
     </title>
 </head>
 <body>
+
+    <div class="start-container">
+        <div>
+            <h1>Let's play Tic-Tac-Toe!</h1>
+            <div class="author">
+                by higgsboson909
+            </div>
+        </div>
+
+        <div class="blinking-statement">
+            Click anywhere on the screen to play....
+        </div>
+    </div>
+
+
     <dialog class="player-1">
         <p>Enter Player 1 name</p>
         
@@ -44,11 +62,10 @@
             <button class="p2-confirm">Confirm</button>
         </form>
     </dialog>
-    <div class="name">
-        <a href="./index.html">Tic-Tac-Toe 
-        </a>
-    </div>
-    <div class="board">
+
+
+
+    <div class="board hidden">
         <button class="box on-hover" data-row="0" data-column="0"></button>
         <button class="box on-hover" data-row="0" data-column="1"></button>
         <button class="box on-hover" data-row="0" data-column="2"></button>

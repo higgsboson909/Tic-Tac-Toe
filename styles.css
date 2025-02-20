@@ -1,10 +1,37 @@
 body {
     display: flex;
+    justify-content: center;
+    background: linear-gradient(to right, rgba(76, 175, 80, 0.5), rgba(76, 175, 80, 0.98));
     padding: 0;
     margin: 0;
-    background-color: #24b388;
 }
 
+.start-container {
+    padding-top: 190px;
+    justify-content: baseline;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    
+}
+.start-container {
+    font-family: "Atkinson Hyperlegible Next";
+}
+h1 {
+    font-size: 3rem;
+    margin-bottom: 15px;
+}
+.start-container div div {
+    text-align: center;
+    font-size: 1.4rem;
+    color: black;
+
+}
+.start-container .blinking-statement {
+    font-weight: 600;
+    font-size: 1.2rem;
+    margin-top: 60px;
+}
 .name a {
     text-align: left;
     font-family: "Chewy";
@@ -13,13 +40,14 @@ body {
     text-decoration: none;
     color: #665f5f;
     text-shadow: -2px 2px 1px rgba(0,0,0,0.59); 
-
+    cursor: pointer;
 }
 .name {
     position: absolute;
     padding-top: 20px;
     padding-left: 40px;
 }
+
 
 .board {
     height: 360px;
@@ -30,6 +58,7 @@ body {
     margin-top: 220px;
     gap: 18px;
 }
+
 
 .box {
     cursor: pointer;
@@ -62,9 +91,7 @@ body {
 .color {
     background-color: #80e8c9;
 }
-.x-mark {
-    background-image: url("./imgaes/close_24dp_5F6368_FILL0_wght400_GRAD0_opsz24.svg");
-}
-.o-mark {
-    background-image: url("./imgaes/check.svg");
+
+.hidden {
+    display: none;
 }

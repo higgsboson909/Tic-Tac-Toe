@@ -87,15 +87,6 @@ let createGameboard = () => {
         b1 = gameboardCreated.getResultBoxes()[0];
         b2 = gameboardCreated.getResultBoxes()[1];
         b3 = gameboardCreated.getResultBoxes()[2];
-        
-
-         
-
-        // Optional: Stop the animation after 10 seconds
-        // setTimeout(() => {
-        //     clearInterval(intervalId); // Stop the interval
-        //     box.style.backgroundColor = "lightblue"; // Reset to the original color
-        // }, 10000);
 
         if(gameboardCreated.getTurns() === 9 && !(gameboardCreated.getWinner())) {
 
@@ -244,14 +235,15 @@ function gameController() {
 }
 
 // display object
-let displayController = () => {
-
-    const p1FormEl = document.querySelector(".player-1");
-    const p2FormEl = document.querySelector(".player-2");
-    const p1CloseDialog = document.querySelector(".player-1 .p1-confirm");
-    const p2CloseDialog = document.querySelector(".player-2 .p2-confirm");
+let displayController = () => {    
+    
+    const startContainerEl = document.querySelector(".start-container")
 
     function showDialog() {
+        const p1FormEl = document.querySelector(".player-1");
+        const p2FormEl = document.querySelector(".player-2");
+        const p1CloseDialog = document.querySelector(".player-1 .p1-confirm");
+        const p2CloseDialog = document.querySelector(".player-2 .p2-confirm");
 
         p1FormEl.showModal();
         p1CloseDialog.addEventListener('click', () => {
@@ -262,10 +254,18 @@ let displayController = () => {
             })
         });
     }
-    
-    function closeDialog() {
+
+    // function startContainer() {
+    //     const startContainerEl = document.querySelector("start-container");
+    //     startContainer.addEventListener("click", () => {
+
+    //     });
         
-    }
+    // }
+    
+    // function closeDialog() {
+        
+    // }
 
     // click dimensions
     let p = null, q = null;
@@ -331,16 +331,43 @@ let displayController = () => {
             box.style.backgroundColor = colors[currentIndex];
 
             currentIndex = (currentIndex + 1) % colors.length;
-        }, 250);
+        }, 350);
         return intervalId;  
+    }
+
+    function blinkTheStatement() {
+        const blinkingStatementEl = document.querySelector(".blinking-statement");
+            let fontSizeArr = ["1.32em", "1.35rem", "1.37rem", "1.39rem", "1.41rem", "1.43rem", "1.45rem", "1.43rem", "1.41rem", "1.39rem", "1.37rem", "1.35rem"];
+            let currentIndex = 0;
+        let blinkOnStatementId = setInterval(() => {
+            blinkingStatementEl.style.fontSize = fontSizeArr[currentIndex];
+            currentIndex = (currentIndex + 1) % fontSizeArr.length;
+        }, 100);
+        return blinkOnStatementId;
+    }
+
+    function listenStartClick() {
+        const htmlEl = document.querySelector("html");
+        const bodyEl = document.querySelector("body")
+        htmlEl.addEventListener("click", () => {
+            
+            bodyEl.style.backgroundColor = "#24b388";
+            startContainerEl.classList.add("hidden");
+            display.showDialog();
+            
+
+        });
     }
     
 
         // gameController();
-    return {PlayOnClick, setClick, boardEl, turnListener, markBox, blinkTheBoxes, showDialog};
+    return {PlayOnClick, setClick, boardEl, turnListener, markBox, blinkTheBoxes, showDialog, blinkTheStatement, listenStartClick};
+
 };
 let display = displayController();
-display.showDialog();
+display.blinkTheStatement();
+display.listenStartClick();
+// display.showDialog();
 Player.setPlayer("ali", "X")
 Player.setPlayer("Umar", "O")
 Player.setCurrentPlayer(Player.getPlayer()[0]);

@@ -32,35 +32,47 @@
 
 
     <dialog class="player-1">
-        <p>Enter Player 1 name</p>
         
-        <form action="" method="dialog">
-            <div>
-                <label for="p1-name">Player 1</label>
-                <input id="p1-name" type="text" placeholder="Enter the name: ">
+        <form class="p1-form" action="" method="dialog">
+            <div class="p1-name">
+                <label for="p1-name">
+                    <h3>Enter First Player name</h3>
+                </label>
+                <input id="p1-name" type="text">
             </div>
 
-            <div>
-                <label for="p1-name">Choose Mark</label>
+
+            <label class="choose-mark" for="">Choose Mark</label>
+
+            <div class="mark-container">
                 
-            </div>
+                <button class="image-option check">
+                    <img class="check" src="./images/check.svg" alt="check-img" width="55px" height="45px">
+                </button>
 
-            <button class="p1-confirm">Confirm</button>
+                <button class="image-option cross">
+                    <img class="cross" src="./images/close_24dp_5F6368_FILL0_wght400_GRAD0_opsz24.svg" alt="cross-img" width="55px" height="45px">
+                </button> 
+            </div>
+            <button type="submit" class="p1-confirm">Confirm</button>
 
 
         </form>
     </dialog>
 
     <dialog class="player-2">
-        <p>Enter Player 2 name</p>
-        
-        <form action="" method="dialog">
-            <div>
-                <label for="p1-name">Player 1</label>
-                <input id="p1-name" type="text" placeholder="Enter the name: ">
+         
+        <form class="p2-form" action="" method="dialog">
+            <div class="p2-name">
+                <label for="p2-name">
+                    <h3>Enter Second Player name</h3>
+                </label>
+                <input id="p2-name" type="text">
             </div>
-            <button class="p2-confirm">Confirm</button>
+
+            <button type="submit" class="p2-confirm">Confirm</button>
         </form>
+
     </dialog>
 
 

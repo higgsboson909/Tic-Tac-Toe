@@ -24,8 +24,13 @@ let Player = (() => {
             pArray[0].score = score;
         }
         else {
+            if(pArray[0].symbol == 'X' && pArray[1].symbol == '') {
+                pArray[1].symbol = 'O';
+            }
+            else   
+                pArray[1].symbol = 'X';
+
             pArray[1].name = name;
-            pArray[1].symbol = symbol;
             pArray[1].score = score;
  
         }
@@ -237,37 +242,100 @@ function gameController() {
 // display object
 let displayController = () => {    
     
-    const startContainerEl = document.querySelector(".start-container")
 
-    function showDialog() {
-        const p1FormEl = document.querySelector(".player-1");
-        const p2FormEl = document.querySelector(".player-2");
-        const p1CloseDialog = document.querySelector(".player-1 .p1-confirm");
-        const p2CloseDialog = document.querySelector(".player-2 .p2-confirm");
+    const p1FormEl = document.querySelector(".player-1");
+    const p2FormEl = document.querySelector(".player-2");
+    const startContainerEl = document.querySelector(".start-container");
+    function formBehaviourPrevention() {
+        let p1Prevention = () => {
+            p1FormEl.addEventListener('submit', (event) => {
+                event.preventDefault();
+            });
+        };
+        let p2Prevention = () => {
+            p2FormEl.addEventListener('submit', (event) => {
+                event.preventDefault();
+            });
+        };
 
-        p1FormEl.showModal();
-        p1CloseDialog.addEventListener('click', () => {
-            p1FormEl.close();
-            p2FormEl.showModal();
-            p2CloseDialog.addEventListener("click", () => {
-                p2FormEl.close();
-            })
-        });
+        return {p1Prevention, p2Prevention}
+        
     }
 
-    // function startContainer() {
-    //     const startContainerEl = document.querySelector("start-container");
-    //     startContainer.addEventListener("click", () => {
+    function showDialog() {
 
-    //     });
-        
-    // }
-    
-    // function closeDialog() {
-        
-    // }
+        const p1DialogEl = document.querySelector(".player-1");
+        const p2DialogEl = document.querySelector(".player-2");
+        const p1CloseDialog = document.querySelector(".p1-confirm");
+        const p2CloseDialog = document.querySelector(".p2-confirm");
+        // let p1name = 
+        // let p2name = 
 
-    // click dimensions
+
+        p1DialogEl.showModal();
+
+        let getForm1Info = (() => {
+            formBehaviourPrevention().p1Prevention();
+            let p1FormEl = document.querySelector(".p1-form");
+            let form1Info = {};
+
+            let markContainerEl = document.querySelector(".mark-container");
+            function getP1Mark(event) {
+                let target = event.target;
+                if(target.classList.contains("cross")) {
+                    form1Info.mark = 'X';
+                }
+                else if(target.classList.contains("check")) {
+                    form1Info.mark = 'O';
+                }
+                console.log(form1Info.mark);
+            }
+            markContainerEl.addEventListener('click', getP1Mark);
+
+            function confirmForm1() {
+                form1Info.p1Name = document.getElementById("p1-name").value;
+                p1CloseDialog.removeEventListener('click', confirmForm1);
+                markContainerEl.removeEventListener('click', getP1Mark)
+                p1DialogEl.close();
+                console.log(form1Info);
+                p2DialogEl.showModal();
+                Player.setPlayer(form1Info.p1Name, form1Info.mark)
+            }
+            p1CloseDialog.addEventListener("click", confirmForm1);
+            return form1Info;
+        });
+        let form1Info = getForm1Info();
+        let getForm2Info = (() => {
+            formBehaviourPrevention().p2Prevention();
+            let p2FormEl = document.querySelector(".p2-form");
+            let mark; 
+            let p2Name;
+            let setMark2 = () => {
+                if(form1Info.mark == 'O') {
+                    mark = "X";
+                }
+                else if(form1Info.mark == "X") {
+                    mark = 'O';
+                } 
+            };
+
+            function confirmForm2() {
+                p2Name = document.getElementById("p2-name").value;
+                p2CloseDialog.removeEventListener('click', confirmForm2);
+                setMark2();
+                console.log({p2Name, mark});
+                Player.setPlayer(p2Name, mark);
+                p2DialogEl.close();
+                display.boardEl.classList.remove("hidden");
+
+            }
+            p2CloseDialog.addEventListener("click", confirmForm2);
+            
+            return {p2Name, mark}; 
+        });
+        getForm2Info();
+    }
+
     let p = null, q = null;
     
     let boardEl = document.querySelector(".board");
@@ -347,28 +415,48 @@ let displayController = () => {
     }
 
     function listenStartClick() {
+
         const htmlEl = document.querySelector("html");
         const bodyEl = document.querySelector("body")
-        htmlEl.addEventListener("click", () => {
-            
+        function openDialog() {
+            clearInterval(display.blinkTheStatement());
             bodyEl.style.backgroundColor = "#24b388";
             startContainerEl.classList.add("hidden");
+            htmlEl.removeEventListener('click', openDialog);
             display.showDialog();
-            
-
-        });
+ 
+        }
+        htmlEl.addEventListener("click", openDialog);
     }
+
+    function getMarkChoice() {
+        let selectedChoice = null;
+        const markChoiceEl = document.querySelector(".mark-container");
+        function getMark() {
+            (e) => {
+            let target = e.target;
+            if(target.classList.contains("cross")) {
+                selectedChoice = 'X';
+                console.log(selectedChoice);
+            }
+            else if(target.classList.contains("check")) {
+                selectedChoice = 'O';
+                console.log(selectedChoice);
+            }
+        }
+        }
+        markChoiceEl.addEventListener('click', );
+        return selectedChoice;
+    }
+
     
 
         // gameController();
-    return {PlayOnClick, setClick, boardEl, turnListener, markBox, blinkTheBoxes, showDialog, blinkTheStatement, listenStartClick};
+    return {PlayOnClick, setClick, boardEl, turnListener, markBox, blinkTheBoxes, showDialog, blinkTheStatement, listenStartClick, getMarkChoice};
 
 };
 let display = displayController();
 display.blinkTheStatement();
 display.listenStartClick();
-// display.showDialog();
-Player.setPlayer("ali", "X")
-Player.setPlayer("Umar", "O")
 Player.setCurrentPlayer(Player.getPlayer()[0]);
 display.PlayOnClick();

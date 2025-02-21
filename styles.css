@@ -181,3 +181,27 @@ button:hover {
 .hidden {
     display: none;
 }
+
+.players {
+    margin-top: 40px;
+    width: 450px;
+    font-size: 1.4rem;
+    font-family: "Atkinson Hyperlegible Next";
+    text-align: center;
+    display: flex;
+    gap: 200px;
+    justify-content: center;
+    align-items: center;
+}
+
+.p1Img, .p2Img {
+    margin-top: 10px;
+    width: 45px;
+    height: 45px;
+}
+
+.turn {
+    border: 3px solid;
+    border-radius: 7px;
+    
+}

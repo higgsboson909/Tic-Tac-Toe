@@ -40,8 +40,13 @@ let Player = (() => {
     let getPlayer = () => {return pArray};
 
     let setCurrentPlayer = (player) => {currentPlayer = player}
-    let getCurrentPlayer = () => {return currentPlayer};
-    
+    let getCurrentPlayer = () => {
+        if(currentPlayer == {}) {
+            return getPlayer()[0];
+        }
+        else 
+            return currentPlayer;
+    };
     return {setPlayer, getPlayer, setCurrentPlayer, getCurrentPlayer};
 })();
 
@@ -49,6 +54,7 @@ let Player = (() => {
 
 // to create gameboard object 
 let createGameboard = () => {
+
 
     // create the gameboard Array
     let gameboardArray = (mark) => {
@@ -148,6 +154,7 @@ let playGame = (m, n, mark) => {    // m = row, n = column
         (gameboardCreated.getTurns() < 9) ? gameboardCreated.incTurns() : alert("game is over!");
         gameboard[m][n] = mark;
         display.markBox(mark);
+        display.renderTurn();
     }
     else 
         console.log("Try again");
@@ -214,7 +221,7 @@ function isSpotAvailable(m, n) {
         return (gameboard[m][n] === ' ') ? true : false;
     }
 }
- let currentP = {};
+ let currentP = Player.getPlayer()[0];
     Player.setCurrentPlayer(Player.getPlayer()[0]);
 // game flow controller
 function gameController() {
@@ -326,7 +333,10 @@ let displayController = () => {
                 console.log({p2Name, mark});
                 Player.setPlayer(p2Name, mark);
                 p2DialogEl.close();
+
                 display.boardEl.classList.remove("hidden");
+                display.gameDashboard();
+                display.renderTurn();
 
             }
             p2CloseDialog.addEventListener("click", confirmForm2);
@@ -449,10 +459,132 @@ let displayController = () => {
         return selectedChoice;
     }
 
+    let renderTurn = () => {
+        let p1Img = document.querySelector(".p1Mark .p1Img");
+        let p2Img = document.querySelector(".p2Mark .p2Img");
+
+        if(Player.getCurrentPlayer().symbol == 'X') {
+            if((p2Img.classList.contains("cross-img")) && (p2Img.classList.contains("turn"))){
+
+                p2Img.classList.remove("turn");
+                p1Img.classList.add("turn");
+
+            }
+            else if(p1Img.classList.contains("cross-img")) {
+                p2Img.classList.remove("turn");
+                p1Img.classList.add("turn");
+            }
+            else if(p2Img.classList.contains("cross-img")) {
+                p1Img.classList.remove("turn");
+                p2Img.classList.add("turn");
+            }
+            // else if(p1Img.classList.contains("check-img turn")) {
+            //     p1Img.classList.remove("turn");
+            //     p2Img.classList.add("turn");
+            // }
+
+        }
+        if(Player.getCurrentPlayer().symbol == 'O') {
+if((p1Img.classList.contains("check-img")) && (p1Img.classList.contains("turn"))){
+
+                p1Img.classList.remove("turn");
+                p2Img.classList.add("turn");
+
+            }
+           
+else  if(p1Img.classList.contains("check-img")){
+
+                p2Img.classList.remove("turn");
+                p1Img.classList.add("turn");
+
+            }
+           else if(p2Img.classList.contains("check-img")) {
+                p1Img.classList.remove("turn");
+                p2Img.classList.add("turn");
+            }
+        }
+
+        console.log(p1Img, p2Img);
+    };
+
+    let gameDashboard = () => {
+ 
+            let p1MarkImg = document.createElement("img");
+            let p2MarkImg = document.createElement("img");
+
+
+            // parent
+            let playersEl = document.createElement("div");
+            playersEl.classList.add("players");
+
+            // child1 
+            let player1El = document.createElement("div");
+            player1El.classList.add("p1");
+
+            // child1 name
+            let p1NameEl = document.createElement("div");
+            p1NameEl.classList.add("p1Name");
+
+            // child1 mark
+            let p1MarkEl = document.createElement("div");
+            p1MarkEl.classList.add("p1Mark");
+
+            // child1 img
+            p1MarkImg.classList.add("p1Img");
+
+            p1MarkEl.appendChild(p1MarkImg);
+
+            player1El.appendChild(p1NameEl);
+            player1El.appendChild(p1MarkEl);
+            playersEl.appendChild(player1El);
+
+            // child2
+            let player2El = document.createElement("div");
+            player2El.classList.add("p2");
+
+            // child2 name
+            let p2NameEl = document.createElement("div");
+            p2NameEl.classList.add("p2Name");
+            
+            // child2 mark
+            let p2MarkEl = document.createElement("div");
+            p2MarkEl.classList.add("p2Mark");
+
+            // child2 Img
+            p2MarkImg.classList.add("p2Img");
+
+            p2MarkEl.appendChild(p2MarkImg);
+            
+            player2El.appendChild(p2NameEl);
+            player2El.appendChild(p2MarkEl);
+            playersEl.appendChild(player2El);
+
+            if(Player.getPlayer()[0].symbol == 'X') {
+                p1MarkImg.classList.add("cross-img");
+                p2MarkImg.classList.add("check-img");
+                p1MarkImg.src = "images/close_24dp_5F6368_FILL0_wght400_GRAD0_opsz24.svg";
+                p2MarkImg.src = "images/check.svg";
+            }
+            else if(Player.getPlayer()[0].symbol == 'O') {
+                p1MarkImg.classList.add("check-img");
+                p2MarkImg.classList.add("cross-img");
+                p1MarkImg.src = "images/check.svg";
+                p2MarkImg.src = "images/close_24dp_5F6368_FILL0_wght400_GRAD0_opsz24.svg";
+            }
+
+            p1NameEl.innerText = Player.getPlayer()[0].name;
+            p2NameEl.innerText = Player.getPlayer()[1].name;
+            // playersEl.appendChild(p1NameEl);
+            // playersEl.appendChild(p1MarkEl);
+            // playersEl.appendChild(p2NameEl);
+            // playersEl.appendChild(p2MarkEl);
+            display.boardEl.append(playersEl);
+        }
+
     
 
         // gameController();
-    return {PlayOnClick, setClick, boardEl, turnListener, markBox, blinkTheBoxes, showDialog, blinkTheStatement, listenStartClick, getMarkChoice};
+    return {gameDashboard, PlayOnClick, setClick, boardEl, turnListener, markBox, blinkTheBoxes, showDialog, blinkTheStatement, listenStartClick, getMarkChoice, renderTurn};
 
 };
 let display = displayController();

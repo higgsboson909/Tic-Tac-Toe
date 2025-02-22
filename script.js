@@ -144,7 +144,9 @@ let playGame = (m, n, mark) => {    // m = row, n = column
             box.classList.remove("on-hover");
         });
         gameboardCreated.highlightResultBoxes();
-        console.log("Game Over!!")
+        console.log("Game Over!!");
+
+        display.announceWinnerAddRestartBtn();
         display.boardEl.removeEventListener('click', display.turnListener);
         }
     };
@@ -165,11 +167,11 @@ let playGame = (m, n, mark) => {    // m = row, n = column
             if(((gameboard[i][0] === 'O') || (gameboard[i][0] === 'X')) && gameboard[i][0] === gameboard[i][1] && gameboard[i][1] === gameboard[i][2]){
                 if(Player.getPlayer()[0].symbol === gameboard[i][1]) {
                     gameboardCreated.setResultBoxes({m: i, i: 0}, {m: i, i: 1}, {m: i, i: 2});
-                    gameboardCreated.setWinner(Player.getPlayer()[0].name);
+                    gameboardCreated.setWinner(Player.getPlayer()[0]);
                 }
                 else if(Player.getPlayer()[1].symbol === gameboard[i][1]){
                     gameboardCreated.setResultBoxes({m: i, i: 0}, {m: i, i: 1}, {m: i, i: 2});
-                    gameboardCreated.setWinner(Player.getPlayer()[1].name);
+                    gameboardCreated.setWinner(Player.getPlayer()[1]);
                 }
             }
         }
@@ -178,11 +180,11 @@ let playGame = (m, n, mark) => {    // m = row, n = column
         for (let i = 0; i < 3; i++) {
             if(((gameboard[0][i] === 'X')  || (gameboard[0][i] === 'O')) && gameboard[0][i] === gameboard[1][i] && gameboard[1][i] === gameboard[2][i]){
             if(Player.getPlayer()[0].symbol === gameboard[0][i]) {
-                gameboardCreated.setWinner(Player.getPlayer()[0].name);
+                gameboardCreated.setWinner(Player.getPlayer()[0]);
                 gameboardCreated.setResultBoxes({m: 0, i}, {m: 1, i}, {m: 2, i});
             }
             else if(Player.getPlayer()[1].symbol === gameboard[0][i]) {
-                gameboardCreated.setWinner(Player.getPlayer()[1].name);
+                gameboardCreated.setWinner(Player.getPlayer()[1]);
                 gameboardCreated.setResultBoxes({m: 0, i}, {m: 1, i}, {m: 2, i});
             }}
         } 
@@ -190,23 +192,23 @@ let playGame = (m, n, mark) => {    // m = row, n = column
         // for diagonal
         if(((gameboard[0][0] === 'X') || (gameboard[0][0] === 'O')) && gameboard[0][0] === gameboard[1][1] && gameboard[1][1] === gameboard[2][2]) {
             if(Player.getPlayer()[0].symbol === gameboard[0][0]) {
-                gameboardCreated.setWinner(Player.getPlayer()[0].name);
+                gameboardCreated.setWinner(Player.getPlayer()[0]);
                 gameboardCreated.setResultBoxes({m: 0, i: 0}, {m: 1, i: 1}, {m: 2, i: 2});
             }
             else if(Player.getPlayer()[1].symbol === gameboard[0][0]) {
-                gameboardCreated.setWinner(Player.getPlayer()[1].name);
+                gameboardCreated.setWinner(Player.getPlayer()[1]);
                 gameboardCreated.setResultBoxes({m: 0, i: 0}, {m: 1, i: 1}, {m: 2, i: 2});
             }
         }
 
         else if(((gameboard[0][2] === 'X') || (gameboard[0][2] === 'O')) && gameboard[0][2] === gameboard[1][1] && gameboard[1][1] === gameboard[2][0]) {
             if(Player.getPlayer()[0].symbol === gameboard[0][2]) {
-                gameboardCreated.setWinner(Player.getPlayer()[0].name);
+                gameboardCreated.setWinner(Player.getPlayer()[0]);
                 gameboardCreated.setResultBoxes({m: 0, i: 2}, {m: 1, i: 1}, {m: 2, i: 0});
             }
             else if(Player.getPlayer()[1].symbol === gameboard[0][2]) {
                 gameboardCreated.setResultBoxes({m: 0, i: 2}, {m: 1, i: 1}, {m: 2, i: 0});
-                gameboardCreated.setWinner(Player.getPlayer()[1].name);
+                gameboardCreated.setWinner(Player.getPlayer()[1]);
             }
 
             
@@ -470,6 +472,10 @@ let displayController = () => {
                 p1Img.classList.add("turn");
 
             }
+else if((p1Img.classList.contains("cross-img")) && (p1Img.classList.contains("turn"))) {
+    p1Img.classList.remove("turn");
+    p2Img.classList.add("turn");
+}
             else if(p1Img.classList.contains("cross-img")) {
                 p2Img.classList.remove("turn");
                 p1Img.classList.add("turn");
@@ -491,8 +497,12 @@ if((p1Img.classList.contains("check-img")) && (p1Img.classList.contains("turn"))
                 p2Img.classList.add("turn");
 
             }
+else if((p2Img.classList.contains("check-img")) && (p2Img.classList.contains("turn"))) {
+    p2Img.classList.remove("turn");
+    p1Img.classList.add("turn");
+}
            
-else  if(p1Img.classList.contains("check-img")){
+else if(p1Img.classList.contains("check-img")){
 
                 p2Img.classList.remove("turn");
                 p1Img.classList.add("turn");
@@ -579,12 +589,65 @@ else  if(p1Img.classList.contains("check-img")){
             // playersEl.appendChild(p2NameEl);
             // playersEl.appendChild(p2MarkEl);
             display.boardEl.append(playersEl);
+
         }
 
+        let announceWinnerAddRestartBtn = () => {
+            (function removeGameDashboard() {
+                let playersEl = document.querySelector(".players");
+                playersEl.remove();
+            })();
+            let winner = gameboardCreated.getWinner();
+
+
+            let winnerEl = document.createElement("div");
+            winnerEl.classList.add("winner");
+
+            let winnerNameEl = document.createElement("div");
+            winnerEl.appendChild(winnerNameEl);
+            console.log(winner);
+
+            let winnerMarkEl = document.createElement("div");
+            winnerEl.appendChild(winnerMarkEl);
+
+            let winnerImgEl = document.createElement("img");
+            if(!(winner == null)) {
+            if(winner.symbol == 'X') {
+                winnerNameEl.innerText = "Winner : " + winner.name;
+                winnerImgEl.src = "images/close_24dp_5F6368_FILL0_wght400_GRAD0_opsz24.svg";
+            }
+            
+            else if(winner.symbol == 'O'){
+                winnerNameEl.innerText = "Winner : " + winner.name;
+                winnerImgEl.src = "images/check.svg";
+
+            }
+            }
+            else {
+                winnerNameEl.innerText = "Match is Draw";
+                winnerMarkEl.remove(); 
+            }
+            
+            winnerMarkEl.appendChild(winnerImgEl);
+
+            display.boardEl.append(winnerEl);
+            
+            (() => {
+            let restartBtnEl = document.createElement("button");
+            restartBtnEl.innerText = "Restart";
+            restartBtnEl.classList.add("restart-btn");
+
+            winnerEl.appendChild(restartBtnEl);
+            restartBtnEl.addEventListener('click', () => {
+                location.reload(true);
+            });
+            })();
+            
+        }
     
 
         // gameController();
-    return {gameDashboard, PlayOnClick, setClick, boardEl, turnListener, markBox, blinkTheBoxes, showDialog, blinkTheStatement, listenStartClick, getMarkChoice, renderTurn};
+    return {announceWinnerAddRestartBtn, gameDashboard, PlayOnClick, setClick, boardEl, turnListener, markBox, blinkTheBoxes, showDialog, blinkTheStatement, listenStartClick, getMarkChoice, renderTurn};
 
 };
 let display = displayController();

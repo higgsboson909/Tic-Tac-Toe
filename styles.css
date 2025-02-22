@@ -182,7 +182,8 @@ button:hover {
     display: none;
 }
 
-.players {
+ .players {
+
     margin-top: 40px;
     width: 450px;
     font-size: 1.4rem;
@@ -194,7 +195,7 @@ button:hover {
     align-items: center;
 }
 
-.p1Img, .p2Img {
+.winner img,   .p1Img, .p2Img {
     margin-top: 10px;
     width: 45px;
     height: 45px;
@@ -204,4 +205,29 @@ button:hover {
     border: 3px solid;
     border-radius: 7px;
     
+}
+ .winnerMarkEl {
+}
+.winner {
+    margin-top: 40px;
+    font-family: "Atkinson Hyperlegible Next";
+    width: 450px;
+    text-align: center;
+    font-size: 1.7rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.restart-btn {
+    background-color: inherit;
+    border-radius: 5px;
+    font-family: inherit;
+    font-size: 1.2rem;
+    margin-top: 12px;
+    height: 40px;
+}
+.restart-btn:hover {
+    cursor: pointer;
 }
